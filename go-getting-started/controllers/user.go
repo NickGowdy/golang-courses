@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"regexp"
 	"strconv"
@@ -15,14 +14,11 @@ type userController struct {
 }
 
 func (uc userController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Entering serverhttp %%%%%%")
 	if r.URL.Path == "/users" {
 		switch r.Method {
 		case http.MethodGet:
-			fmt.Println(" getall %%%%%%")
-			uc.GetAll(w, r)
+			uc.getAll(w, r)
 		case http.MethodPost:
-			fmt.Println(" post %%%%%%")
 			uc.post(w, r)
 		default:
 			w.WriteHeader(http.StatusNotImplemented)
@@ -31,10 +27,12 @@ func (uc userController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		matches := uc.userIDPattern.FindStringSubmatch(r.URL.Path)
 		if len(matches) == 0 {
 			w.WriteHeader(http.StatusNotFound)
+			return
 		}
 		id, err := strconv.Atoi(matches[1])
 		if err != nil {
 			w.WriteHeader(http.StatusNotFound)
+			return
 		}
 		switch r.Method {
 		case http.MethodGet:
@@ -44,17 +42,17 @@ func (uc userController) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		case http.MethodDelete:
 			uc.delete(id, w)
 		default:
-			w.WriteHeader(http.StatusNotFound)
+			w.WriteHeader(http.StatusNotImplemented)
 		}
 	}
 }
 
-func (uc *userController) GetAll(w http.ResponseWriter, r *http.Request) {
+func (uc *userController) getAll(w http.ResponseWriter, r *http.Request) {
 	encodeResponseAsJSON(models.GetUsers(), w)
 }
 
 func (uc *userController) get(id int, w http.ResponseWriter) {
-	u, err := models.GetUserById(id)
+	u, err := models.GetUserByID(id)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -69,7 +67,7 @@ func (uc *userController) post(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Could not parse User object"))
 		return
 	}
-	u, err = models.AddUsers(u)
+	u, err = models.AddUser(u)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
@@ -85,10 +83,9 @@ func (uc *userController) put(id int, w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Could not parse User object"))
 		return
 	}
-	u, err = models.AddUsers(u)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+	if id != u.ID {
+		w.WriteHeader(http.StatusBadRequest)
+		w.Write([]byte("ID of submitted user must match ID in URL"))
 		return
 	}
 	u, err = models.UpdateUser(u)
@@ -122,6 +119,6 @@ func (uc *userController) parseRequest(r *http.Request) (models.User, error) {
 
 func newUserController() *userController {
 	return &userController{
-		userIDPattern: regexp.MustCompile(`^/users/\d+/?`),
+		userIDPattern: regexp.MustCompile(`^/users/(\d+)/?`),
 	}
 }
