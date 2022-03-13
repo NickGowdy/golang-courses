@@ -1,20 +1,23 @@
 package main
 
 import (
-	"fmt"
+	"net/http"
 
-	"github.com/pluralsight/webservice/models"
+	"github.com/pluralsight/webservice/controllers"
 )
 
 func main() {
-	u := models.User{
-		ID:        1,
-		FirstName: "Nick",
-		LastName:  "Gowdy",
-	}
-
-	fmt.Println(u)
+	controllers.RegisterControllers()
+	http.ListenAndServe(":3000", nil)
 }
+
+// u := models.User{
+// 	ID:        1,
+// 	FirstName: "Nick",
+// 	LastName:  "Gowdy",
+// }
+
+// fmt.Println(u)
 
 // const (
 // 	first = iota + 6
