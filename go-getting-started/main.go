@@ -7,9 +7,42 @@ import (
 )
 
 func main() {
+
 	controllers.RegisterControllers()
 	http.ListenAndServe(":3000", nil)
 }
+
+// r := http.Request{Method: "GET"}
+
+// switch r.Method {
+// case "GET":
+// 	println("GET request")
+// }
+
+// switch r.Method {
+// case "POST":
+// 	println("POST request")
+// }
+// panic("Something bad just happened")
+
+// for i := 0; i < 5; i++ {
+// 	println(i)
+
+// 	if i == 3 {
+// 		break
+// 	}
+// }
+
+// wellKnownPorts := map[string]int{"http": 80, "https": 443}
+
+// for _, v := range wellKnownPorts {
+// 	println(v)
+// }
+
+// slice := []int{1, 2, 3}
+// for i, v := range slice {
+// 	println(i, v)
+// }
 
 // u := models.User{
 // 	ID:        1,
