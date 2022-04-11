@@ -7,8 +7,9 @@ import (
 
 func main() {
 	p := organization.NewPerson("James", "Wilson")
-	p.SetTwitterHandler("@jam_wils")
+	p.SetTwitterHandler(organization.TwitterHandler("@jam_wils"))
 	fmt.Println(p.FullName())
 	fmt.Println(p.TwitterHandler())
+	fmt.Println(p.TwitterHandler().RedirectUrl())
 	println(p.Id())
 }
