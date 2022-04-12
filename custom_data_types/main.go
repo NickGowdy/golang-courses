@@ -12,4 +12,22 @@ func main() {
 	fmt.Println(p.TwitterHandler())
 	fmt.Println(p.TwitterHandler().RedirectUrl())
 	println(p.ID())
+
+	// name1 := Name{First: "James", last: "wilson"}
+	// name2 := OtherName{First: "James", last: "wilson"}
+
+	// if name1 == name2 {
+	// 	println("Match skefks")
+	// }
+
+}
+
+type Name struct {
+	First string
+	last  string
+}
+
+type OtherName struct {
+	First string
+	last  string
 }

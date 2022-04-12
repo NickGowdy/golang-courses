@@ -3,6 +3,7 @@ package organization
 import (
 	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -46,11 +47,27 @@ type europeanUnionIdentifier struct {
 	country string
 }
 
-func NewEuropeanUnionIdentifier(id, country string) Citizen {
-	return europeanUnionIdentifier{
-		id:      id,
-		country: country,
+func NewEuropeanUnionIdentifier(id interface{}, country string) Citizen {
+	switch v := id.(type) {
+	case string:
+		return europeanUnionIdentifier{
+			id:      v,
+			country: country,
+		}
+	case int:
+		return europeanUnionIdentifier{
+			id:      strconv.Itoa(v),
+			country: country,
+		}
+	case europeanUnionIdentifier:
+		return v
+	case Person:
+		euID, _ := v.Citizen.(europeanUnionIdentifier)
+		return euID
+	default:
+		panic("using an invalid type to initialize EU Identifier")
 	}
+
 }
 
 func (eui europeanUnionIdentifier) ID() string {
@@ -90,10 +107,6 @@ func NewPerson(firstName, lastName string, citizen Citizen) Person {
 		},
 		Citizen: citizen,
 	}
-}
-
-func (p *Person) ID() string {
-	return fmt.Sprintf("Person's identifier: %s", p.First)
 }
 
 func (p *Person) SetTwitterHandler(handler TwitterHandler) error {
