@@ -6,10 +6,10 @@ import (
 )
 
 func main() {
-	p := organization.NewPerson("James", "Wilson")
+	p := organization.NewPerson("James", "Wilson", organization.NewEuropeanUnionIdentifier("23u8234", "Germany"))
 	p.SetTwitterHandler(organization.TwitterHandler("@jam_wils"))
 	fmt.Println(p.FullName())
 	fmt.Println(p.TwitterHandler())
 	fmt.Println(p.TwitterHandler().RedirectUrl())
-	println(p.Id())
+	println(p.ID())
 }
